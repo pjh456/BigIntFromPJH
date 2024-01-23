@@ -15,18 +15,13 @@ int main()
     //bigint c=a%b;
     //std::cout<<c;
     bigint c=a+b;
-    std::cout<<c;
-    std::cout<<'\n';
+    std::cout<<c<<'\n';
     c=a-b;
-    std::cout<<c;
-    std::cout<<'\n';
+    std::cout<<c<<'\n';
     c=a*b;
-    std::cout<<c;
-    std::cout<<'\n';
+    std::cout<<c<<'\n';
     c=a/b;
-    std::cout<<c;
-    std::cout<<'\n';
+    std::cout<<c<<'\n';
     c=a%b;
-    std::cout<<c;
-    std::cout<<'\n';
+    std::cout<<c<<'\n';
 }

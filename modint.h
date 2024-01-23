@@ -65,7 +65,7 @@ public:
         return modint(ans,modvalue);
     }
     //IO
-    friend void operator<<(std::ostream& out,modint& x){
+    friend std::ostream& operator<<(std::ostream& out,modint& x){
         if(x.negative){
             out<<'-';
         }
@@ -81,5 +81,6 @@ public:
             out<<"None";
         }
         out<<")";
+        return out;
     }
 };

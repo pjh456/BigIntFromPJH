@@ -12,31 +12,18 @@ int main(){
     std::cout<<c;
     std::cout<<"->";
 
-    std::cout<<_c;
-    std::cout<<'\n';
+    std::cout<<_c<<'\n';
     c=a-b;
     _c=_a-_b;
-    std::cout<<c;
-    std::cout<<"->";
-    std::cout<<_c;
-    std::cout<<'\n';
+    std::cout<<c<<"->"<<_c<<'\n';
     c=a*b;
     _c=_a*_b;
-    std::cout<<c;
-    std::cout<<"->";
-    std::cout<<_c;
-    std::cout<<'\n';
+    std::cout<<c<<"->"<<_c<<'\n';
     c=a/b;
     _c=_a/_b;
-    std::cout<<c;
-    std::cout<<"->";
-    std::cout<<_c;
-    std::cout<<'\n';
+    std::cout<<c<<"->"<<_c<<'\n';
     c=a%b;
     _c=_a%_b;
-    std::cout<<c;
-    std::cout<<"->";
-    std::cout<<_c;
-    std::cout<<'\n';
+    std::cout<<c<<"->"<<_c<<'\n';
 
 }

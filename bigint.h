@@ -175,6 +175,9 @@ protected:
         stayValue.negative=ModIsNeg;
         stayValue.__locate.reverse();
         stayValue=__Build(stayValue);
+        while(stayValue.neg()){
+            stayValue+=y;
+        }
         return stayValue;
     }
     bool IsBiggerThan(const bigint& _x,const bigint& _y){
@@ -204,6 +207,10 @@ protected:
         selfs.__locate=this->__locate;
         selfs.negative=this->negative;
         return selfs;
+    }
+    void selfIs(bigint x){
+        this->__locate=x.__locate;
+        this->negative=x.negative;
     }
     bigint __pair(const vector<short> &__locate_n,const bool &negative_n){
         bigint selfs;
@@ -286,20 +293,32 @@ public:
     bigint operator+(const bigint &x){
         return __Add(self(),x);
     }
+    void operator+=(const bigint &x){
+        selfIs(__Add(self(),x));
+    }
     bigint operator-(const bigint &x){
         return __Deq(self(),x);
+    }
+    void operator-=(const bigint &x){
+        selfIs(__Deq(self(),x));
     }
     bigint operator*(const bigint &x){
         return __Mul(self(),x);
     }
+    void operator*=(const bigint &x){
+        selfIs(__Mul(self(),x));
+    }
     bigint operator/(const bigint &x){
         return __Div(self(),x);
+    }
+    void operator/=(const bigint &x){
+        selfIs(__Div(self(),x));
     }
     bigint operator%(const bigint &x){
         return __Mod(self(),x);
     }
     //IO
-    friend void operator>>(std::istream& in,bigint& x){
+    friend std::istream& operator>>(std::istream& in,bigint& x){
         x.__locate.clear();
         std::string inputs;
         in>>inputs;
@@ -311,8 +330,9 @@ public:
             x.__locate.push_back((short)(inputs.back()^48));
             inputs.pop_back();
         }
+        return in;
     }
-    friend void operator<<(std::ostream& out,bigint& x){
+    friend std::ostream& operator<<(std::ostream& out,bigint& x){
         x=x.__Build(x);
         if(x.negative){
             out<<'-';
@@ -321,5 +341,6 @@ public:
         //for(vector<short>::iterator it=x.__locate.begin();it!=x.__locate.end();++it){
             out<<(*it);
         }
+        return out;
     }
 };
