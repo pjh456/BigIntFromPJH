@@ -1,9 +1,10 @@
 #include<stdlib.h>
-#include<iostream>
+//#include<iostream>
 #include<ostream>
 #include<istream>
 #include<assert.h>
 #include "vector.h"
+#include "byter.h"
 class istream;
 class ostream;
 
