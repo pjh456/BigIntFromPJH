@@ -4,7 +4,9 @@
 #include<istream>
 #include<assert.h>
 #include "vector.h"
-#include "byter.h"
+//#include<vector>
+//#include "byter.h"
+//using namespace std;
 class istream;
 class ostream;
 
@@ -15,10 +17,8 @@ protected:
     bool negative;
     bigint __Build(const bigint &_x){
         bigint x=_x;
-        if(x.__locate.size()){
-            while(!x.__locate.back()){
-                x.__locate.pop_back();
-            }
+        while(x.size()&&!x.__locate.back()){
+            x.__locate.pop_back();
         }
         if(x.__locate.empty()){
             x.__locate.push_back(0);
@@ -83,7 +83,6 @@ protected:
             }
             ans=__Build(ans);
             ans.negative=x.negative^swapped;
-            return ans;
         }
         else{
             y.negative^=1;
@@ -91,8 +90,22 @@ protected:
             ans=__Add(x,y);
             //std::cout<<ans;
             //ans.negative=x.negative;
-            return ans;
         }
+        return ans;
+    }
+    bigint __Mul(const bigint &_x,const int &_y){
+        bigint x=_x,ans;
+        int y=_y,stayValue=0;
+        for(size_t i=0;i<x.__locate.size();++i){
+            stayValue+=y*x.__locate[i];
+            ans.push_back(stayValue%10);
+            stayValue/=10;
+        }
+        while(stayValue){
+            ans.push_back(stayValue%10);
+            stayValue/=10;
+        }
+        return ans;
     }
     bigint __Mul(const bigint &_x,const bigint &_y){
         bigint x=_x,y=_y,ans;
@@ -115,6 +128,29 @@ protected:
         }
         return ans;
     }
+    bigint __Div(const bigint &_x,const int &_y){
+        bigint x=_x,ans;
+        int y=(_y>=0)?_y:-_y;
+        long long stayValue=0;
+        for(size_t i=x.__locate.size()-1;i>=0;--i){
+            stayValue=stayValue*10+(x.__locate[i]);
+            ans.push_back(stayValue/y);
+            stayValue%=y;
+            if(i==0){
+                break;
+            }
+        }
+        ans.__locate.reverse();
+        ans=__Build(ans);
+        ans.negative=x.negative^(_y<0);
+        return ans;
+    }
+    /*
+    bigint __Div(const bigint &_x,const bigint &_y){
+        bigint x=_x,y=_y,ans;
+        bool swapped=x.negative;
+    }*/
+
     bigint __Div(const bigint &_x,const bigint &_y){
         bigint x=_x,y=_y,ans,stayValue;
         bool swapped=x.negative^y.negative;
@@ -122,8 +158,10 @@ protected:
         while(!x.__locate.empty()){
             stayValue.push_back(x.__locate.back());
             x.__locate.pop_back();
+
             stayValue.__locate.reverse();
             stayValue=__Build(stayValue);
+
             bigint memory;
             memory.push_back(0);
             size_t i=0;
@@ -134,6 +172,7 @@ protected:
                 for(;i<=10;++i){
                     if(memory>stayValue){
                         memory=memory-y;
+                        //std::cout<<stayValue<<"-"<<memory<<std::endl;
                         ans.push_back(i-1);
                         break;
                     }
@@ -141,8 +180,9 @@ protected:
                 }
                 stayValue=stayValue-memory;
             }
-            stayValue.__locate.reverse();
+
             stayValue=__Build(stayValue);
+            stayValue.__locate.reverse();
         }
         ans.__locate.reverse();
         ans.negative=swapped;
@@ -176,10 +216,22 @@ protected:
         stayValue.negative=ModIsNeg;
         stayValue.__locate.reverse();
         stayValue=__Build(stayValue);
-        while(stayValue.neg()){
+        while(stayValue.negative){
             stayValue+=y;
         }
         return stayValue;
+    }
+    bigint __Pow(const bigint &_x,const bigint &_y){
+        bigint x=_x,y=_y,ans("1"),cmp;
+        cmp=__Build(cmp);
+        while(y>cmp){
+            if(y.IsOdd()){
+                ans=ans*x;
+            }
+            x=x*x;
+            y/=2;
+        }
+        return ans;
     }
     bool IsBiggerThan(const bigint& _x,const bigint& _y){
         bigint x=_x,y=_y;
@@ -290,6 +342,17 @@ public:
     bool operator<=(bigint &x){
         return !IsBiggerThan(__pair(__locate,negative),x);
     }
+    bool IsPositive(){
+        return !(self().negative);
+    }
+    bool IsOdd(){
+        selfIs(__Build(self()));
+        return (__locate.front())&1;
+    }
+    bool IsEven(){
+        selfIs(__Build(self()));
+        return !((__locate.front())&1);
+    }
     //Dimaric operation
     bigint operator+(const bigint &x){
         return __Add(self(),x);
@@ -306,17 +369,37 @@ public:
     bigint operator*(const bigint &x){
         return __Mul(self(),x);
     }
+    bigint operator*(const int &x){
+        return __Mul(self(),x);
+    }
     void operator*=(const bigint &x){
+        selfIs(__Mul(self(),x));
+    }
+    void operator*=(const int &x){
         selfIs(__Mul(self(),x));
     }
     bigint operator/(const bigint &x){
         return __Div(self(),x);
     }
+    bigint operator/(const int &x){
+        return __Div(self(),x);
+    }
     void operator/=(const bigint &x){
+        selfIs(__Div(self(),x));
+    }
+    void operator/=(const int &x){
         selfIs(__Div(self(),x));
     }
     bigint operator%(const bigint &x){
         return __Mod(self(),x);
+    }
+    bigint operator-(){
+        bigint selfs=self();
+        selfs.negative=!negative;
+        return selfs;
+    }
+    bigint pow(const bigint &x){
+        return __Pow(self(),x);
     }
     //IO
     friend std::istream& operator>>(std::istream& in,bigint& x){

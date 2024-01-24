@@ -6,6 +6,13 @@ class ostream;
 class modint:public bigint{
 private:
     bigint modvalue;
+    modint self(){
+        modint selfs;
+        selfs.__locate=this->__locate;
+        selfs.negative=this->negative;
+        selfs.modvalue=this->modvalue;
+        return selfs;
+    }
 public:
     //Constructor
     modint(){}
@@ -63,6 +70,11 @@ public:
             ans=ans%modvalue;
         }
         return modint(ans,modvalue);
+    }
+    modint operator-(){
+        modint selfs=self();
+        selfs.negative=!negative;
+        return selfs;
     }
     //IO
     friend std::ostream& operator<<(std::ostream& out,modint& x){

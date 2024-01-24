@@ -49,16 +49,8 @@ public:
         __capacity=x.__capacity;
         delete[] buffer;
         buffer=temp;
-        /*
-        __size=0;
-        __capacity=0;
-        */
         return *this;
     }
-    /*
-    T& operator[](size_t idx){
-        return buffer[idx];
-    }*/
     T& operator[](size_t idx){
         return *(buffer+idx);
     }
