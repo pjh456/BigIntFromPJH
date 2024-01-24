@@ -145,12 +145,28 @@ protected:
         ans.negative=x.negative^(_y<0);
         return ans;
     }
-    /*
     bigint __Div(const bigint &_x,const bigint &_y){
-        bigint x=_x,y=_y,ans;
-        bool swapped=x.negative;
-    }*/
-
+        bigint x=_x,y=_y,ans,base("10"),cmp=_y;
+        bool swapped=x.negative^y.negative;
+        x.negative=y.negative=cmp.negative=false;
+        size_t _size=x.size()-y.size()+1;
+        base=base.pow(_size)*y;
+        while(base>=cmp){
+            for(int i=0;i<10;++i){
+                if(base>x){
+                    ans.push_back(i);
+                    break;
+                }
+                x-=base;
+            }
+            base=base/10;
+        }
+        ans.reverse();
+        ans.negative=swapped;
+        ans=__Build(ans);
+        return ans;
+    }
+    /*
     bigint __Div(const bigint &_x,const bigint &_y){
         bigint x=_x,y=_y,ans,stayValue;
         bool swapped=x.negative^y.negative;
@@ -188,7 +204,7 @@ protected:
         ans.negative=swapped;
         ans=__Build(ans);
         return ans;
-    }
+    }*/
     bigint __Mod(const bigint &_x,const bigint &_y){
         bigint x=_x,y=_y,stayValue;
         bool ModIsNeg=x.negative^y.negative;
@@ -220,6 +236,18 @@ protected:
             stayValue+=y;
         }
         return stayValue;
+    }
+    bigint __Pow(const bigint &_x,const size_t &_y){
+        bigint x=_x,ans("1");
+        size_t y=_y;
+        while(y>0){
+            if(y&1){
+                ans=ans*x;
+            }
+            x=x*x;
+            y>>=1;
+        }
+        return ans;
     }
     bigint __Pow(const bigint &_x,const bigint &_y){
         bigint x=_x,y=_y,ans("1"),cmp;
@@ -293,6 +321,9 @@ public:
     }
     void push_front(const short &x){
         __locate.insert(__locate.begin(),x);
+    }
+    void reverse(){
+        __locate.reverse();
     }
     vector<short> value(){
         return __locate;
@@ -397,6 +428,9 @@ public:
         bigint selfs=self();
         selfs.negative=!negative;
         return selfs;
+    }
+    bigint pow(const size_t &x){
+        return __Pow(self(),x);
     }
     bigint pow(const bigint &x){
         return __Pow(self(),x);
